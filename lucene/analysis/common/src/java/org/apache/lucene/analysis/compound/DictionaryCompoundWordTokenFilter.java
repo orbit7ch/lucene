@@ -58,7 +58,19 @@ public class DictionaryCompoundWordTokenFilter extends CompoundWordTokenFilterBa
       int minSubwordSize,
       int maxSubwordSize,
       boolean onlyLongestMatch) {
-    super(input, dictionary, minWordSize, minSubwordSize, maxSubwordSize, onlyLongestMatch);
+    super(input, dictionary, minWordSize, minSubwordSize, maxSubwordSize, onlyLongestMatch, 0);
+  }
+
+  /**
+   * Creates a new {@link DictionaryCompoundWordTokenFilter}
+   *
+   * @param input the {@link org.apache.lucene.analysis.TokenStream} to process
+   * @param dictionary the word dictionary to match against.
+   * @param subtokenPositionIncrement set a positional increment for subtokens to 0 or 1.
+   */
+  public DictionaryCompoundWordTokenFilter(
+      TokenStream input, CharArraySet dictionary, int subtokenPositionIncrement) {
+    super(input, dictionary, subtokenPositionIncrement);
     if (dictionary == null) {
       throw new IllegalArgumentException("dictionary must not be null");
     }
