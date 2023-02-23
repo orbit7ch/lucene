@@ -99,13 +99,7 @@ public abstract class CompoundWordTokenFilterBase extends TokenFilter {
   @Override
   public final boolean incrementToken() throws IOException {
     if (!tokens.isEmpty()) {
-      assert current != null;
-      CompoundToken token = tokens.removeFirst();
-      restoreState(current); // keep all other attributes untouched
-      termAtt.setEmpty().append(token.txt);
-      offsetAtt.setOffset(token.startOffset, token.endOffset);
-      posIncAtt.setPositionIncrement(1);
-      return true;
+      return processSubtokens();
     }
 
     current = null; // not really needed, but for safety
@@ -113,8 +107,11 @@ public abstract class CompoundWordTokenFilterBase extends TokenFilter {
       // Only words longer than minWordSize get processed
       if (termAtt.length() >= this.minWordSize) {
         decompose();
-        // only capture the state if we really need it for producing new tokens
+
+        // provided that we have sub-tokens, we don't want to write the original token into the output
         if (!tokens.isEmpty()) {
+          return this.processSubtokens();
+        } else {
           current = captureState();
         }
       }
@@ -123,6 +120,16 @@ public abstract class CompoundWordTokenFilterBase extends TokenFilter {
     } else {
       return false;
     }
+  }
+
+  private boolean processSubtokens() {
+    assert current != null;
+    CompoundToken token = tokens.removeFirst();
+    restoreState(current); // keep all other attributes untouched
+    termAtt.setEmpty().append(token.txt);
+    offsetAtt.setOffset(token.startOffset, token.endOffset);
+    posIncAtt.setPositionIncrement(1);
+    return true;
   }
 
   /**
