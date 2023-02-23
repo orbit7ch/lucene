@@ -36,6 +36,9 @@ public abstract class CompoundWordTokenFilterBase extends TokenFilter {
   /** The default for maximal length of subwords that get propagated to the output of this filter */
   public static final int DEFAULT_MAX_SUBWORD_SIZE = 15;
 
+  /** TBD: document this parameter */
+  public static final boolean AND_OPERATOR_SUPPORT = false;
+
   protected final CharArraySet dictionary;
   protected final LinkedList<CompoundToken> tokens;
   protected final int minWordSize;
